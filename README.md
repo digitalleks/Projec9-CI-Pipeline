@@ -52,5 +52,36 @@ After the plugin installation is complete, we are prompted to create admin user 
 
 The next step in the project is to configure Jenkins to retrieve source codes from GitHub using Webhooks. First we enable webhooks in the GitHub repository settings.
 
+<img width="823" alt="Webhook" src="https://user-images.githubusercontent.com/61512079/185593961-2a0f973a-2402-4f99-8086-ac98563f139e.PNG">\
+<img width="610" alt="Webhooks-Git" src="https://user-images.githubusercontent.com/61512079/185594379-fca3cc05-e799-4bc3-b331-6e1985d8a269.PNG">
+
+Next on the Jenkins web console, new item was created called "Freestyle project".
+As part of this process, the github repository url is provided in the source code management of Jenkins as shown below:
+
+<img width="638" alt="jenkin-Github" src="https://user-images.githubusercontent.com/61512079/185604571-e4d4a6fe-d9c9-4c79-9bcc-51d2d623ed78.PNG">
+
+The configuration is saved and we tried the build first manually:
+
+<img width="433" alt="Build_manual" src="https://user-images.githubusercontent.com/61512079/185604910-6099fea4-0903-4305-b0a7-a56895a0c827.PNG">\
+<img width="516" alt="Build_console_log" src="https://user-images.githubusercontent.com/61512079/185605340-95032c95-7c52-4794-924f-a883c9184ae1.PNG">
+
+Next we set up triggers to make the build automatic. As shown below new updates from the git repository is reflected on the Jenkins:
+
+<img width="648" alt="Build_updates_jenkins" src="https://user-images.githubusercontent.com/61512079/185605570-fd661773-5ee2-4142-a144-21c731c2a3b6.PNG">
+
+The artifact created for the git push is stored in the archive below:
+```
+ls /var/lib/jenkins/jobs/tooling_github/builds/<build_number>/archive/
+```
+<img width="579" alt="Artifact" src="https://user-images.githubusercontent.com/61512079/185605879-9c0676e0-210e-4e7b-bedf-b2ea29d47f63.PNG">
+
+The third major step in the project is to Configure Jenkins to copy files to NFS server via SSH.  So we have to set up the saved artifacts to copy remotely to the NFS server via ssh.  TO achieve this, a plugin called "Push ovER SSH" is installed as shown:
+
+
+
+
+
+
+
 
 
