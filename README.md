@@ -75,7 +75,39 @@ ls /var/lib/jenkins/jobs/tooling_github/builds/<build_number>/archive/
 ```
 <img width="579" alt="Artifact" src="https://user-images.githubusercontent.com/61512079/185605879-9c0676e0-210e-4e7b-bedf-b2ea29d47f63.PNG">
 
-The third major step in the project is to Configure Jenkins to copy files to NFS server via SSH.  So we have to set up the saved artifacts to copy remotely to the NFS server via ssh.  TO achieve this, a plugin called "Push ovER SSH" is installed as shown:
+The third major step in the project is to Configure Jenkins to copy files to NFS server via SSH.  So we have to set up Jenkins to copy artifacts remotely to the NFS server via ssh.  To achieve this, a plugin called "Push over SSH" is installed and configured on Jenkins to SSH to the NFS server as shown:
+
+<img width="923" alt="Push-over-ssh1" src="https://user-images.githubusercontent.com/61512079/185749840-1b756c68-97ca-44e0-b250-f56f7ca9d842.PNG">
+
+<img width="513" alt="Jenkins-NFS-Test" src="https://user-images.githubusercontent.com/61512079/185750094-df4d0a3b-a940-4035-b0df-f207017a56bf.PNG">
+
+After testing the connection successfully, the next step is to open the Jenkins job/project configuration page and add another one "Post-build Action":
+
+<img width="600" alt="Post-Build_action1" src="https://user-images.githubusercontent.com/61512079/185750298-6180c1dc-c552-48f3-a726-9552c3323ec0.PNG">
+
+On the next page, we configure the Post Build Action to send all files produced by the build into NFS designated directory previously vreated(/mnt/apps).  The aim is to copy all the files & directories, so we use "** " in the Source file entry. After saving the configuration, we test the setup by making changes in the Git Project(for example editing the README.MD file).  When the change is Commited, it will trigger Webhook to trigger a new job on Jenkins.  The update is shown in the
+Console Output.  In my first testing, I encounted the error shown below:
+
+<img width="528" alt="build-ssh-nfs error" src="https://user-images.githubusercontent.com/61512079/185750738-a13221f8-aa7d-4b42-9ddd-06f784890f28.PNG">
+
+The error above pointed to Permission Issue on the NFS server. To fix this, I connected to the NFS Server to check the permission and observed the ownership of the directory was not set as shown below:\
+<img width="329" alt="permission error" src="https://user-images.githubusercontent.com/61512079/185750936-1d02867b-c3f6-4ca7-8a95-76991c655348.PNG">
+
+The owner of \mnt\apps directory was set to ec2-user(the account we configured on the Jenkins Push over SSH) using the command below:
+```bash
+sudo chown -R ec2-user:ec2-user /mnt/apps
+```
+The test was carried out again by making changes on the Github README.MD file. This time it was successful as shown below:
+
+<img width="524" alt="Build-SSH-NFS-SUCCESS" src="https://user-images.githubusercontent.com/61512079/185751095-2b4fc516-63f9-450b-8655-7a3aff60ed3b.PNG">
+
+Also the update was verified on the NFS server /mnt/apps directory as shown below:
+```bash
+sudo cat /mnt/apps/README.md
+```
+<img width="484" alt="Test-Success" src="https://user-images.githubusercontent.com/61512079/185751185-2eb067ca-3111-4143-9707-1100051d119d.PNG">
+
+This confirm successful implementation of the Continous Integration solution using Jenkins CI.
 
 
 
